@@ -1,4 +1,4 @@
-const asyncHandler = (fn) => {
+const asyncErrorHandler = (fn) => {
   return async (req, res, next) => {
     try {
       await fn(req, res, next);
@@ -13,4 +13,4 @@ const asyncHandler = (fn) => {
   };
 };
 
-export default asyncHandler;
+export default asyncErrorHandler;
