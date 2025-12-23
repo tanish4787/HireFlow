@@ -3,15 +3,17 @@ import ApiError from "../utils/ApiError.js";
 
 const uploadFile = async ({ buffer, fileName }) => {
   try {
-    if (!buffer) {
-      throw new ApiError("File buffer is missing", 400);
+    if (!buffer || !fileName) {
+      throw new ApiError("Invalid file data", 400);
     }
+
+    const baseName = fileName.includes(".") ? fileName.split(".")[0] : fileName;
 
     const result = await new Promise((resolve, reject) => {
       const stream = cloudinary.uploader.upload_stream(
         {
           resource_type: "raw",
-          public_id: fileName.split(".")[0],
+          public_id: baseName,
         },
         (error, result) => {
           if (error) return reject(error);
@@ -20,6 +22,7 @@ const uploadFile = async ({ buffer, fileName }) => {
       );
       stream.end(buffer);
     });
+
     return {
       url: result.secure_url,
       fileId: result.public_id,

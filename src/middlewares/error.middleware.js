@@ -1,5 +1,5 @@
 const errorMiddleware = (err, req, res, next) => {
-  const statusCode = err.statusCode || 500;
+  const statusCode = Number(err.statusCode) || 500;
 
   if (!err.isOperational) {
     console.error("UNEXPECTED ERROR:", err);

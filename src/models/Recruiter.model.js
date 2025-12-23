@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const ResumeSchema = new mongoose.Schema(
+const RecruiterSchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -9,35 +9,32 @@ const ResumeSchema = new mongoose.Schema(
       index: true,
     },
 
-    label: {
+    name: {
       type: String,
       trim: true,
-      required: true,
     },
 
-    fileUrl: {
+    email: {
       type: String,
       required: true,
+      lowercase: true,
+      trim: true,
     },
 
-    cloudProvider: {
+    company: {
       type: String,
-      required: true,
+      trim: true,
     },
 
-    cloudFileId: {
+    role: {
       type: String,
-      required: true,
-    },
-
-    fileSizeInBytes: {
-      type: Number,
-      required: true,
+      trim: true,
     },
   },
   { timestamps: true }
 );
 
-ResumeSchema.index({ userId: 1, label: 1 }, { unique: true });
-const Recruiter = mongoose.model("Recruiter", ResumeSchema);
+RecruiterSchema.index({ userId: 1, email: 1 }, { unique: true });
+
+const Recruiter = mongoose.model("Recruiter", RecruiterSchema);
 export default Recruiter;

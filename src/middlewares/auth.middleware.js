@@ -8,21 +8,23 @@ const protect = async (req, res, next) => {
 
     if (
       req.headers.authorization &&
-      req.headers.authorization.startsWith("Bearer")
+      req.headers.authorization.startsWith("Bearer ")
     ) {
       token = req.headers.authorization.split(" ")[1];
     }
 
     if (!token) {
-      return next(new ApiError("Not authorized to access this route", 401));
+      throw new ApiError("Not authorized to access this route", 401);
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    const user = await User.findById(decoded._id);
+    const user = await User.findById(decoded.userId);
+
     if (!user) {
-      throw new ApiError(401, "User No Longer exists.");
+      throw new ApiError("User no longer exists", 401);
     }
+
     req.user = user;
     next();
   } catch (error) {

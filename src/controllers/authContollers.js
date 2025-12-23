@@ -1,8 +1,14 @@
 import asyncErrorHandler from "../utils/asyncErrorHandler.js";
 import ApiError from "../utils/ApiError.js";
+
 import User from "../models/User.model.js";
 import MagicToken from "../models/MagicToken.model.js";
+
 import generateMagicToken from "../utils/generateMagicToken.js";
+import { sendEmail } from "../utils/EmailService.js";
+
+import crypto from "crypto";
+import jwt from "jsonwebtoken";
 
 export const loginWithMagicLink = asyncErrorHandler(async (req, res) => {
   const { email } = req.body;
@@ -37,8 +43,21 @@ export const loginWithMagicLink = asyncErrorHandler(async (req, res) => {
     expiresAt: new Date(Date.now() + 10 * 60 * 1000),
   });
 
-  // TODO: send email with magic link
-  // https://hireflow.com/auth/verify?token=rawToken
+  const magicLink = `${process.env.FRONTEND_URL}/auth/verify?token=${rawToken}`;
+
+  await sendEmail({
+    to: email,
+    subject: "Your HireFlow login link",
+    text: `Hi,
+
+Click the link below to log in to HireFlow:
+
+${magicLink}
+
+This link will expire in 10 minutes.
+
+– HireFlow`,
+  });
 
   res.status(200).json({
     success: true,

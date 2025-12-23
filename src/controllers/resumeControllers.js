@@ -1,20 +1,21 @@
-import Resume from "../models/Resume.model";
+import Resume from "../models/Resume.model.js";
 import asyncHandler from "../utils/asyncErrorHandler.js";
 import ApiError from "../utils/ApiError.js";
-import { uploadFile } from "../utils/CloudStorageService.js";
+import { uploadFile, deleteFile } from "../utils/CloudStorageService.js";
 
 export const uploadResume = asyncHandler(async (req, res) => {
   if (!req.file) {
     throw new ApiError("Resume file is required", 400);
   }
-  const { label } = req.body;
 
+  const { label } = req.body;
   if (!label) {
     throw new ApiError("Resume label is required", 400);
   }
 
   const cloudResult = await uploadFile({
     buffer: req.file.buffer,
+    fileName: req.file.originalname, 
   });
 
   try {
@@ -41,4 +42,37 @@ export const uploadResume = asyncHandler(async (req, res) => {
 
     throw new ApiError("Failed to save resume", 500);
   }
+});
+
+export const listResumes = asyncHandler(async (req, res) => {
+  const resumes = await Resume.find({ userId: req.user._id }).sort({
+    createdAt: -1,
+  });
+
+  res.status(200).json({
+    success: true,
+    count: resumes.length,
+    data: resumes,
+  });
+});
+
+export const deleteResume = asyncHandler(async (req, res) => {
+  const { resumeId } = req.params;
+
+  const resume = await Resume.findOne({
+    _id: resumeId,
+    userId: req.user._id,
+  });
+
+  if (!resume) {
+    throw new ApiError("Resume not found", 404);
+  }
+
+  await deleteFile({ fileId: resume.cloudFileId });
+  await resume.deleteOne();
+
+  res.status(200).json({
+    success: true,
+    message: "Resume deleted successfully",
+  });
 });
