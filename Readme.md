@@ -24,24 +24,20 @@ Built with a **real-world production mindset**, HireFlow focuses on correctness,
 ### 👤 Recruiter Management
 
 - Add recruiters with:
-
   - Name
   - Email
   - Company
   - Role
-
 - User-scoped data (no cross-user access)
 
 ### ✉️ Email Templates
 
 - Role-based editable email templates
 - Dynamic variable rendering:
-
   - Recruiter name
   - Company
   - Role
   - Sender name
-
 - Fallback default templates if none exist
 
 ### 📤 Resume Sending
@@ -79,7 +75,44 @@ Built with a **real-world production mindset**, HireFlow focuses on correctness,
 
 ## 🗂️ Project Structure
 
-`src/ ├── app.js ├── server.js ├── configs/ │   ├── db.js │   └── cloudinary.js ├── controllers/ │   ├── authControllers.js │   ├── resumeControllers.js │   ├── recruiterControllers.js │   ├── emailControllers.js │   └── templateControllers.js ├── models/ │   ├── User.model.js │   ├── Resume.model.js │   ├── Recruiter.model.js │   ├── EmailTemplate.model.js │   ├── MagicToken.model.js │   └── SendLog.model.js ├── routes/ │   ├── auth.routes.js │   ├── resume.routes.js │   ├── recruiter.routes.js │   ├── email.routes.js │   └── template.routes.js ├── middlewares/ │   ├── auth.middleware.js │   └── errorMiddleware.js ├── utils/ │   ├── ApiError.js │   ├── asyncErrorHandler.js │   ├── EmailService.js │   ├── CloudStorageService.js │   ├── RenderTemplate.js │   └── generateMagicToken.js └── .env`
+```
+src/
+├── app.js
+├── server.js
+├── configs/
+│   ├── db.js
+│   └── cloudinary.js
+├── controllers/
+│   ├── authControllers.js
+│   ├── resumeControllers.js
+│   ├── recruiterControllers.js
+│   ├── emailControllers.js
+│   └── templateControllers.js
+├── models/
+│   ├── User.model.js
+│   ├── Resume.model.js
+│   ├── Recruiter.model.js
+│   ├── EmailTemplate.model.js
+│   ├── MagicToken.model.js
+│   └── SendLog.model.js
+├── routes/
+│   ├── auth.routes.js
+│   ├── resume.routes.js
+│   ├── recruiter.routes.js
+│   ├── email.routes.js
+│   └── template.routes.js
+├── middlewares/
+│   ├── auth.middleware.js
+│   └── errorMiddleware.js
+├── utils/
+│   ├── ApiError.js
+│   ├── asyncErrorHandler.js
+│   ├── EmailService.js
+│   ├── CloudStorageService.js
+│   ├── RenderTemplate.js
+│   └── generateMagicToken.js
+└── .env
+```
 
 ---
 
@@ -87,7 +120,22 @@ Built with a **real-world production mindset**, HireFlow focuses on correctness,
 
 Create a `.env` file in the root:
 
-`PORT=8000  MONGO_URI=mongodb+srv://<user>:<password>@cluster.mongodb.net/HireFlow  JWT_SECRET=your_jwt_secret  BACKEND_URL=http://localhost:8000  EMAIL_USER=your_email@gmail.com EMAIL_APP_PASSWORD=your_gmail_app_password  CLOUDINARY_CLOUD_NAME=xxxx CLOUDINARY_API_KEY=xxxx CLOUDINARY_API_SECRET=xxxx`
+```env
+PORT=8000
+
+MONGO_URI=mongodb+srv://<user>:<password>@cluster.mongodb.net/HireFlow
+
+JWT_SECRET=your_jwt_secret
+
+BACKEND_URL=http://localhost:8000
+
+EMAIL_USER=your_email@gmail.com
+EMAIL_APP_PASSWORD=your_gmail_app_password
+
+CLOUDINARY_CLOUD_NAME=xxxx
+CLOUDINARY_API_KEY=xxxx
+CLOUDINARY_API_SECRET=xxxx
+```
 
 ⚠️ Use **Gmail App Password**, not your normal Gmail password.
 
@@ -97,34 +145,58 @@ Create a `.env` file in the root:
 
 ### 1️⃣ Install dependencies
 
-`npm install`
+```bash
+npm install
+```
 
 ### 2️⃣ Start the server
 
-`npm run dev`
+```bash
+npm run dev
+```
 
 ### 3️⃣ Health check
 
-`GET /health`
+```
+GET /health
+```
 
 Response:
 
-`{ "status": "OK" }`
+```json
+{ "status": "OK" }
+```
 
 ---
 
 ## 🔐 Authentication Flow (Magic Link)
 
-1.  `POST /api/auth/login`
+1. **Request login**
 
-`{ "email": "user@example.com" }`
+```
+POST /api/auth/login
+```
 
-2.  Click magic link received via email
-3.  `GET /api/auth/verify?token=xxxx`
+```json
+{ "email": "user@example.com" }
+```
+
+2. Click the magic link received via email
+
+3. **Verify token**
+
+```
+GET /api/auth/verify?token=xxxx
+```
 
 Response:
 
-`{   "success": true,   "token": "<JWT>" }`
+```json
+{
+  "success": true,
+  "token": "<JWT>"
+}
+```
 
 Use this JWT for all protected routes.
 
@@ -134,7 +206,11 @@ Use this JWT for all protected routes.
 
 ### Upload Resume
 
-`POST /api/resumes Authorization: Bearer <JWT> Content-Type: multipart/form-data`
+```
+POST /api/resumes
+Authorization: Bearer <JWT>
+Content-Type: multipart/form-data
+```
 
 Fields:
 
@@ -145,13 +221,19 @@ Fields:
 
 ### List Resumes
 
-`GET /api/resumes Authorization: Bearer <JWT>`
+```
+GET /api/resumes
+Authorization: Bearer <JWT>
+```
 
 ---
 
 ### Delete Resume
 
-`DELETE /api/resumes/:resumeId Authorization: Bearer <JWT>`
+```
+DELETE /api/resumes/:resumeId
+Authorization: Bearer <JWT>
+```
 
 ---
 
@@ -159,15 +241,28 @@ Fields:
 
 ### Create Recruiter
 
-`POST /api/recruiters Authorization: Bearer <JWT>`
+```
+POST /api/recruiters
+Authorization: Bearer <JWT>
+```
 
-`{   "name": "Amit",   "email": "amit@company.com",   "company": "ABC Corp",   "role": "Backend Engineer" }`
+```json
+{
+  "name": "Amit",
+  "email": "amit@company.com",
+  "company": "ABC Corp",
+  "role": "Backend Engineer"
+}
+```
 
 ---
 
 ### List Recruiters
 
-`GET /api/recruiters Authorization: Bearer <JWT>`
+```
+GET /api/recruiters
+Authorization: Bearer <JWT>
+```
 
 ---
 
@@ -175,9 +270,18 @@ Fields:
 
 ### Create / Update Template
 
-`POST /api/templates Authorization: Bearer <JWT>`
+```
+POST /api/templates
+Authorization: Bearer <JWT>
+```
 
-`{   "role": "Backend Engineer",   "subject": "Application for Backend Engineer",   "body": "Hi {{recruiterName}},\n\nI came across the {{role}} role at {{company}}..." }`
+```json
+{
+  "role": "Backend Engineer",
+  "subject": "Application for Backend Engineer",
+  "body": "Hi {{recruiterName}},\n\nI came across the {{role}} role at {{company}}..."
+}
+```
 
 ---
 
@@ -185,16 +289,59 @@ Fields:
 
 ### Single Send
 
-`POST /api/send Authorization: Bearer <JWT>`
+```
+POST /api/send
+Authorization: Bearer <JWT>
+```
 
-`{   "recruiterId": "xxxx",   "resumeId": "xxxx" }`
+```json
+{
+  "recruiterId": "xxxx",
+  "resumeId": "xxxx"
+}
+```
 
 ---
 
 ### Batch Send (Max 5)
 
-`POST /api/send/batch Authorization: Bearer <JWT>`
+```
+POST /api/send/batch
+Authorization: Bearer <JWT>
+```
 
-`{   "resumeId": "xxxx",   "recruiterIds": ["id1", "id2", "id3"] }`
+```json
+{
+  "resumeId": "xxxx",
+  "recruiterIds": ["id1", "id2", "id3"]
+}
+```
 
 Duplicate sends are automatically skipped or blocked.
+
+---
+
+##
+
+```json
+{
+  "success": false,
+  "message": "Resume already sent to this recruiter"
+}
+```
+
+
+
+---
+
+## 🧑‍💻 Author
+
+**HireFlow (Tanish)**\
+Built with a **production-first mindset** to solve a real problem faced by job seekers.
+
+---
+
+## 📜 License
+
+MIT
+
