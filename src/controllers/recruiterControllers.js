@@ -5,7 +5,7 @@ import ApiError from "../utils/ApiError.js";
 export const createRecruiter = asyncHandler(async (req, res) => {
   const { name, email, company, role } = req.body;
 
-  if (!email || !name || !email || !company || !role) {
+  if (!email || !name || !company || !role) {
     throw new ApiError("All fields are required", 400);
   }
 
