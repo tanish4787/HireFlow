@@ -51,21 +51,29 @@ export const sendResumeToRecruiter = asyncHandler(async (req, res) => {
 
   const subject = template?.subject || "Job Application";
 
-  const emailText = template
-    ? renderTemplate(template.body, {
-        recruiterName: recruiter.name || "there",
-        company: recruiter.company || "your organization",
-        role: recruiter.role || "the open position",
-        senderName: req.user.name || "Candidate",
-      })
-    : `Hi ${recruiter.name || "there"},
+  const emailText =
+    template && template.body?.trim()
+      ? renderTemplate(template.body, {
+          recruiterName: recruiter.name || "there",
+          company: recruiter.company || "your organization",
+          role: recruiter.role || "the open position",
+          senderName: req.user.name || "Candidate",
+        })
+      : `Hi ${recruiter.name || "there"},
 
-I came across an opportunity that aligns well with my background and wanted to reach out.
+I hope this email finds you well.
 
-I’ve attached my resume for your review.  
-If the position is open, I’d be happy to discuss further.
+I recently identified a career opportunity at ${
+          recruiter.company
+        } that aligns closely with my professional background and expertise. Given my experience in ${
+          recruiter.role
+        }, I am eager to explore how I can contribute to your team.
 
-Regards,  
+I have attached my resume for your review. If the position is currently open, I would welcome the opportunity to discuss my qualifications with you in more detail.
+
+Thank you for your time and consideration.
+
+Best regards,
 ${req.user.name || "Candidate"}`;
 
   await sendEmail({

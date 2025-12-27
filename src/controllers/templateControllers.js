@@ -9,12 +9,11 @@ export const createTemplate = asyncHandler(async (req, res) => {
     throw new ApiError("role, subject and body are required", 400);
   }
 
-  const template = await Template.create({
-    userId: req.user._id,
-    role,
-    subject,
-    body,
-  });
+  const template = await Template.findOneAndUpdate(
+    { userId: req.user._id, role },
+    { subject, body },
+    { new: true, upsert: true }
+  );
 
   res.status(201).json({
     success: true,
