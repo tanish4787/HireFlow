@@ -13,8 +13,10 @@ const app = express();
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:3000",
-  process.env.CLIENT_URL, 
-].filter(Boolean); 
+  "https://www.hireflow.bar",
+  "https://hireflow.bar",
+  process.env.CLIENT_URL,
+].filter(Boolean);
 
 app.use(
   cors({
