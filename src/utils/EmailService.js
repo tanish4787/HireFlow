@@ -12,7 +12,7 @@ export const sendEmail = async ({
 }) => {
   try {
     await resend.emails.send({
-      from: "HireFlow <onboarding@resend.dev>",
+      from: "HireFlow <login@hireflow.bar>",
       to,
       subject,
       text,
