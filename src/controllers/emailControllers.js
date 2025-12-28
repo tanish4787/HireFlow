@@ -107,8 +107,8 @@ export const sendResumeBatch = asyncHandler(async (req, res) => {
     throw new ApiError("resumeId and recruiterIds are required", 400);
   }
 
-  if (recruiterIds.length > 5) {
-    throw new ApiError("Maximum 5 recruiters allowed per batch", 400);
+  if (recruiterIds.length > 15) {
+    throw new ApiError("Maximum 15 recruiters allowed per batch", 400);
   }
 
   const resume = await Resume.findOne({
