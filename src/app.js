@@ -9,21 +9,31 @@ import emailRoutes from "./routes/emailRoutes.js";
 import templateRoutes from "./routes/templateRoutes.js";
 
 const app = express();
-const allowedOrigins = ["http://localhost:5173", process.env.CLIENT_URL];
+
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:3000",
+  process.env.CLIENT_URL, 
+].filter(Boolean); 
+
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin) return callback(null, true);
+      if (!origin) {
+        return callback(null, true);
+      }
 
       if (allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("CORS not allowed"));
+        return callback(null, true);
       }
+
+      console.error("❌ Blocked by CORS:", origin);
+      return callback(new Error("CORS not allowed"));
     },
     credentials: true,
   })
 );
+
 app.use(express.json());
 app.use(cookieParser());
 
