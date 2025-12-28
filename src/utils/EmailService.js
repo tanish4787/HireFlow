@@ -1,13 +1,22 @@
-import transporter from "../configs/email.js";
+import { Resend } from "resend";
 import ApiError from "./ApiError.js";
 
-export const sendEmail = async ({ to, subject, text, attachments = [] }) => {
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+export const sendEmail = async ({
+  to,
+  subject,
+  text,
+  html,
+  attachments = [],
+}) => {
   try {
-    await transporter.sendMail({
-      from: `"HireFlow - " <${process.env.EMAIL_USER}>`,
+    await resend.emails.send({
+      from: "HireFlow <onboarding@resend.dev>",
       to,
       subject,
       text,
+      html: html || `<p>${text}</p>`,
       attachments,
     });
   } catch (error) {

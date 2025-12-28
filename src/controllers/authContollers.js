@@ -43,7 +43,7 @@ export const loginWithMagicLink = asyncErrorHandler(async (req, res) => {
     expiresAt: new Date(Date.now() + 10 * 60 * 1000),
   });
 
-  const magicLink = `${process.env.FRONTEND_URL}/auth/verify?token=${rawToken}`;
+  const magicLink = `${process.env.CLIENT_URL}/auth/verify?token=${rawToken}`;
 
   await sendEmail({
     to: email,
@@ -57,6 +57,13 @@ ${magicLink}
 This link will expire in 10 minutes.
 
 – HireFlow`,
+    html: `
+      <p>Hi,</p>
+      <p>Click the link below to log in to <strong>HireFlow</strong>:</p>
+      <p><a href="${magicLink}">${magicLink}</a></p>
+      <p>This link will expire in 10 minutes.</p>
+      <p>– HireFlow</p>
+    `,
   });
 
   res.status(200).json({
